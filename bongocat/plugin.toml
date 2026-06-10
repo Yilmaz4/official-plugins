@@ -11,7 +11,7 @@ min_noctalia = "5.0.0"
 author = "noctalia"
 icon = "cat"
 description = "A cat that slaps your bar when you type or to the beat."
-tags = ["fun", "animation"]
+tags = ["fun", "animation", "cat"]
 
 [[widget]]
 id = "cat"
