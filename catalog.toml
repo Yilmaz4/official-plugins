@@ -14,7 +14,7 @@ tags = ["example", "demo"]
 [[plugin]]
 id = "noctalia/screen_recorder"
 name = "Screen Recorder"
-version = "1.0.0"
+version = "1.1.0"
 author = "noctalia"
 min_noctalia = "5.0.0"
 tags = ["recording", "screen", "video"]
