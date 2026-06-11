@@ -143,13 +143,6 @@ local function buildResolutionFlag()
     return ""
 end
 
-local function detectFocusedMonitor()
-    if not noctalia.focusedOutputName then
-        return nil
-    end
-    return noctalia.focusedOutputName()
-end
-
 local function buildGsrPrefix()
     return [[
 _gpuscreenrecorder_flatpak_installed() {
@@ -182,15 +175,6 @@ end
 local function buildRecordCommand()
     local source = cfg("video_source")
 
-    if source == "focused-monitor" then
-        local mon = detectFocusedMonitor()
-        if not mon then
-            noctalia.notifyError("Recording failed", "Could not detect focused monitor")
-            return nil
-        end
-        source = mon
-    end
-
     local dir = outputDirectory()
 
     local pattern = cfg("filename_pattern")
@@ -216,15 +200,6 @@ end
 
 local function buildReplayCommand()
     local source = cfg("video_source")
-
-    if source == "focused-monitor" then
-        local mon = detectFocusedMonitor()
-        if not mon then
-            noctalia.notifyError("Replay failed", "Could not detect focused monitor")
-            return nil
-        end
-        source = mon
-    end
 
     local dir = outputDirectory()
 

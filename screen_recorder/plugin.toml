@@ -12,7 +12,7 @@
 
 id = "noctalia/screen_recorder"
 name = "Screen Recorder"
-version = "1.1.0"
+version = "1.1.1"
 min_noctalia = "5.0.0"
 author = "noctalia"
 license = "MIT"
@@ -22,10 +22,15 @@ description = "Record the screen with gpu-screen-recorder."
 
 [[setting]]
 key = "video_source"
-type = "string"
+type = "select"
 label = "Video source"
 default = "portal"
-description = "\"portal\", \"focused-monitor\", or a monitor/output name"
+description = "GPU Screen Recorder capture mode."
+options = [
+  { value = "focused", label = "Focused" },
+  { value = "portal", label = "Portal" },
+  { value = "region", label = "Region" },
+]
 
 [[setting]]
 key = "directory"
