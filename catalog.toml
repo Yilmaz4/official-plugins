@@ -35,3 +35,14 @@ icon = "cat"
 description = "A cat that slaps your bar when you type or to the beat."
 min_noctalia = "5.0.0"
 tags = ["fun", "animation", "cat"]
+
+[[plugin]]
+id = "noctalia/translator"
+name = "Translator"
+version = "1.0.0"
+author = "noctalia"
+license = "MIT"
+icon = "language"
+description = "Translate text from the launcher via Google Translate. Type `/tr <lang> <text>`."
+min_noctalia = "5.0.0"
+tags = ["translate", "language", "launcher"]
