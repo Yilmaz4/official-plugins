@@ -11,6 +11,8 @@
 
 local state = "idle" -- idle | pending | recording | replay_pending | replaying
 local available = false
+local RECORDING_STATES = { "recording", "pending" }
+local PENDING_STATES = { "pending", "replay_pending" }
 
 local function send(action)
     noctalia.state.set("command", action)
@@ -19,7 +21,7 @@ end
 local function applyStatus(status)
     if type(status) == "table" then
         state = status.state or "idle"
-        available = status.available and true or false
+        available = if status.available then true else false
     end
 
     local hideInactive = noctalia.getConfig("hide_inactive")
@@ -36,7 +38,7 @@ local function applyStatus(status)
         barWidget.setGlyphColor("error")
         barWidget.setColor("error")
         barWidget.setVisible(true)
-    elseif state == "pending" or state == "replay_pending" then
+    elseif table.find(PENDING_STATES, state) then
         barWidget.setGlyph("video")
         barWidget.setGlyphColor("primary")
         barWidget.setColor("primary")
@@ -55,7 +57,7 @@ end
 
 function onClick()
     if not available then return end
-    if state == "recording" or state == "pending" then
+    if table.find(RECORDING_STATES, state) then
         send("stop")
     elseif state == "idle" then
         send("start")

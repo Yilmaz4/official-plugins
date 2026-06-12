@@ -9,6 +9,6 @@ local count = 0
 noctalia.setUpdateInterval(1000)
 
 function update()
-  count = count + 1
+  count += 1
   noctalia.state.set("tick", count)
 end

@@ -11,20 +11,17 @@
 local recording = false
 local replaying = false
 local available = false
+local RECORDING_STATES = { "recording", "pending" }
+local REPLAY_STATES = { "replaying", "replay_pending" }
 
 local function applyStatus(status)
-    local st = (type(status) == "table" and status.state) or "idle"
-    available = (type(status) == "table" and status.available) or false
-    recording = (st == "recording" or st == "pending")
-    replaying = (st == "replaying" or st == "replay_pending")
+    local hasStatus = type(status) == "table"
+    local st = if hasStatus then status.state or "idle" else "idle"
+    available = if hasStatus and status.available then true else false
+    recording = table.find(RECORDING_STATES, st) ~= nil
+    replaying = table.find(REPLAY_STATES, st) ~= nil
 
-    if recording then
-        shortcut.setLabel("Recording")
-    elseif replaying then
-        shortcut.setLabel("Replay buffer")
-    else
-        shortcut.setLabel("Record screen")
-    end
+    shortcut.setLabel(if recording then "Recording" elseif replaying then "Replay buffer" else "Record screen")
     shortcut.setIcon("video", "video-off")
     shortcut.setActive(recording or replaying)
     shortcut.setEnabled(available)

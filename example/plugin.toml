@@ -5,7 +5,7 @@
 
 id = "noctalia/example"
 name = "Example"
-version = "1.0.0"
+version = "1.0.1"
 min_noctalia = "5.0.0"
 author = "noctalia"
 license = "MIT"

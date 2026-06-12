@@ -81,13 +81,7 @@ end
 
 local function refreshDisplay()
   applyCatColor()
-  if paused or waiting then
-    barWidget.setText(SLEEP_GLYPH)
-  elseif blinking then
-    barWidget.setText(BLINK_GLYPH)
-  else
-    barWidget.setText(glyphs[catState] or "bc")
-  end
+  barWidget.setText(if paused or waiting then SLEEP_GLYPH elseif blinking then BLINK_GLYPH else glyphs[catState] or "bc")
 end
 
 local function onKeyDown(isBigHit)
@@ -96,13 +90,11 @@ local function onKeyDown(isBigHit)
   waitingTicks = 0
   blinking = false
 
-  if isBigHit then
-    catState = STATE_BOTH
-  elseif catState ~= STATE_IDLE then
+  if isBigHit or catState ~= STATE_IDLE then
     catState = STATE_BOTH
   else
     leftWasLast = not leftWasLast
-    catState = leftWasLast and STATE_LEFT or STATE_RIGHT
+    catState = if leftWasLast then STATE_LEFT else STATE_RIGHT
   end
   idleTicks = 0
   refreshDisplay()
@@ -113,11 +105,7 @@ local function onKeyUp()
   waiting = false
   waitingTicks = 0
 
-  if catState == STATE_BOTH then
-    catState = leftWasLast and STATE_LEFT or STATE_RIGHT
-  else
-    catState = STATE_IDLE
-  end
+  catState = if catState == STATE_BOTH then if leftWasLast then STATE_LEFT else STATE_RIGHT else STATE_IDLE
   idleTicks = 0
   refreshDisplay()
 end
@@ -128,11 +116,7 @@ local function onKeyRepeat(isBigHit)
   waitingTicks = 0
 
   if catState == STATE_IDLE then
-    if isBigHit then
-      catState = STATE_BOTH
-    else
-      catState = leftWasLast and STATE_LEFT or STATE_RIGHT
-    end
+    catState = if isBigHit then STATE_BOTH elseif leftWasLast then STATE_LEFT else STATE_RIGHT
   end
   idleTicks = 0
   refreshDisplay()
@@ -148,7 +132,7 @@ local function onBeatTap(isBigHit)
     catState = STATE_BOTH
   else
     leftWasLast = not leftWasLast
-    catState = leftWasLast and STATE_LEFT or STATE_RIGHT
+    catState = if leftWasLast then STATE_LEFT else STATE_RIGHT
   end
 
   idleTicks = 0
@@ -157,7 +141,7 @@ end
 
 -- ── Keyboard reader (noctalia.runStream → evtest) ────────────────────────
 local function has(line, needle)
-  return string.find(line, needle, 1, true) ~= nil
+  return line:find(needle, 1, true) ~= nil
 end
 
 local function onEvtestLine(line)
@@ -183,15 +167,15 @@ local function startInputReader()
   end
   -- Only accept a real evdev node — this string is interpolated into a shell
   -- command, so reject anything that isn't /dev/input/eventN.
-  if not string.match(device, "^/dev/input/event%d+$") then
-    noctalia.notifyError("Bongo Cat", "Invalid input_device (expected /dev/input/eventN): " .. device)
+  if not device:match("^/dev/input/event%d+$") then
+    noctalia.notifyError("Bongo Cat", `Invalid input_device (expected /dev/input/eventN): {device}`)
     return
   end
   if not noctalia.commandExists("evtest") then
     noctalia.notifyError("Bongo Cat", "evtest is not installed — cannot read keyboard input")
     return
   end
-  noctalia.runStream("evtest '" .. device .. "' 2>/dev/null", onEvtestLine)
+  noctalia.runStream(`evtest '{device}' 2>/dev/null`, onEvtestLine)
 end
 
 startInputReader()
@@ -201,8 +185,8 @@ local function parseCsvNumbers(csv)
   if csv == nil or csv == "" then
     return values
   end
-  for part in string.gmatch(csv, "([^,]+)") do
-    values[#values + 1] = tonumber(part) or 0
+  for part in csv:gmatch("([^,]+)") do
+    table.insert(values, tonumber(part) or 0)
   end
   return values
 end
@@ -220,7 +204,7 @@ local function average(values, firstIndex, lastIndex)
   local count = 0
   for i = firstIndex, lastIndex do
     sum = sum + (values[i] or 0)
-    count = count + 1
+    count += 1
   end
   if count == 0 then
     return 0
@@ -235,11 +219,11 @@ function update()
   end
 
   if beatCooldownTicks > 0 then
-    beatCooldownTicks = beatCooldownTicks - 1
+    beatCooldownTicks -= 1
   end
 
   if raveFlashTicks > 0 then
-    raveFlashTicks = raveFlashTicks - 1
+    raveFlashTicks -= 1
     if raveFlashTicks == 0 then
       refreshDisplay()
     end
@@ -249,7 +233,7 @@ function update()
 
   -- Idle timeout: return paws to rest
   if catState ~= STATE_IDLE then
-    idleTicks = idleTicks + 1
+    idleTicks += 1
     if idleTicks >= IDLE_TICKS then
       catState = STATE_IDLE
       refreshDisplay()
@@ -258,7 +242,7 @@ function update()
 
   -- Waiting timeout: go to sleep
   if not waiting then
-    waitingTicks = waitingTicks + 1
+    waitingTicks += 1
     if waitingTicks >= WAITING_TICKS then
       waiting = true
       blinking = false
@@ -269,7 +253,7 @@ function update()
   -- Blink logic (only when awake and idle)
   if not waiting and catState == STATE_IDLE then
     if blinking then
-      blinkDuration = blinkDuration + 1
+      blinkDuration += 1
       if blinkDuration >= BLINK_DURATION then
         blinking = false
         blinkDuration = 0
@@ -277,7 +261,7 @@ function update()
         refreshDisplay()
       end
     else
-      nextBlinkIn = nextBlinkIn - 1
+      nextBlinkIn -= 1
       if nextBlinkIn <= 0 then
         blinking = true
         blinkDuration = 0
@@ -306,9 +290,9 @@ function onAudioSpectrum(valuesCsv, stateCsv)
     return
   end
 
-  local subBassCount = math.min(4, #values)
-  local bassCount = math.min(8, #values)
-  local midCount = math.min(16, #values)
+  local subBassCount = math.clamp(#values, 1, 4)
+  local bassCount = math.clamp(#values, 1, 8)
+  local midCount = math.clamp(#values, 9, 16)
   local subBassAvg = average(values, 1, subBassCount)
   local bassAvg = average(values, 1, bassCount)
   local midAvg = average(values, 9, midCount)

@@ -13,6 +13,8 @@ local CHECK_TICKS = 8 -- 8 * 250ms = 2s between process checks
 local PENDING_TICKS = 8
 
 local state = "idle" -- idle | pending | recording | replay_pending | replaying
+local RECORDING_STATES = { "recording", "pending" }
+local REPLAY_STATES = { "replaying", "replay_pending" }
 local outputPath = ""
 local isAvailable = false
 local tickCount = 0
@@ -31,7 +33,7 @@ end
 
 -- Publish the recorder's status so the widget and shortcut can mirror it.
 local function publishStatus()
-    local key = state .. (isAvailable and "/1" or "/0")
+    local key = `{state}/{if isAvailable then "1" else "0"}`
     if key == lastStatusKey then return end
     lastStatusKey = key
     noctalia.state.set("status", { state = state, available = isAvailable })
@@ -40,7 +42,7 @@ end
 local function setState(nextState)
     if state == nextState then return end
     state = nextState
-    stateGeneration = stateGeneration + 1
+    stateGeneration += 1
 end
 
 local function detectProcessStateAsync(callback)
@@ -57,16 +59,10 @@ local function detectProcessStateAsync(callback)
             end
         end
 
-        pending = pending - 1
+        pending -= 1
         if pending > 0 then return end
 
-        if isReplaying then
-            callback("replaying")
-        elseif isRecording then
-            callback("recording")
-        else
-            callback(nil)
-        end
+        callback(if isReplaying then "replaying" elseif isRecording then "recording" else nil)
     end
 
     local function queue(kind, name, token)
@@ -101,7 +97,8 @@ local function checkAvailability()
 end
 
 local function copyToClipboard(path)
-    local uri = "file://" .. path:gsub(" ", "%%20"):gsub("'", "%%27"):gsub('"', "%%22")
+    local escapedPath = path:gsub(" ", "%%20"):gsub("'", "%%27"):gsub('"', "%%22")
+    local uri = `file://{escapedPath}`
     noctalia.copyToClipboard(uri, "text/uri-list")
 end
 
@@ -113,7 +110,7 @@ local function notifyRecordingSavedIfPresent()
     local savedPath = outputPath
     if savedPath == "" then return end
 
-    noctalia.runAsync("sleep 0.5; test -s " .. shellQuote(savedPath), function(result)
+    noctalia.runAsync(`sleep 0.5; test -s {shellQuote(savedPath)}`, function(result)
         if result.exitCode ~= 0 then
             return
         end
@@ -132,15 +129,14 @@ local function buildAudioFlags()
     local codec = cfg("audio_codec")
     if source == "none" then return "" end
     if source == "both" then
-        return '-ac ' .. codec .. ' -a "default_output|default_input"'
+        return `-ac {codec} -a "default_output|default_input"`
     end
-    return "-ac " .. codec .. " -a " .. source
+    return `-ac {codec} -a {source}`
 end
 
 local function buildResolutionFlag()
     local res = cfg("resolution")
-    if res ~= "original" then return "-s " .. res end
-    return ""
+    return if res ~= "original" then `-s {res}` else ""
 end
 
 local function buildGsrPrefix()
@@ -153,14 +149,10 @@ if command -v gpu-screen-recorder >/dev/null 2>&1; then
 end
 
 local function outputDirectory()
-    local dir = cfg("directory")
-    if dir == "" then
-        dir = (noctalia.getenv("HOME") or "/tmp") .. "/Videos"
-    else
-        dir = noctalia.expandPath(dir)
-    end
+    local configured = cfg("directory")
+    local dir = if configured == "" then `{noctalia.getenv("HOME") or "/tmp"}/Videos` else noctalia.expandPath(configured)
     if dir:sub(-1) ~= "/" then
-        dir = dir .. "/"
+        dir ..= "/"
     end
     return dir
 end
@@ -178,24 +170,21 @@ local function buildRecordCommand()
     local dir = outputDirectory()
 
     local pattern = cfg("filename_pattern")
-    local filename = os.date(pattern) .. ".mp4"
-    outputPath = dir .. filename
+    local filename = `{os.date(pattern)}.mp4`
+    outputPath = `{dir}{filename}`
 
     local fps = cfg("frame_rate")
     local codec = cfg("video_codec")
     local quality = cfg("quality")
-    local cursor = cfg("show_cursor") and "yes" or "no"
+    local cursor = if cfg("show_cursor") then "yes" else "no"
     local cr = cfg("color_range")
-    local restore = cfg("restore_portal") and "-restore-portal-session yes" or ""
+    local restore = if cfg("restore_portal") then "-restore-portal-session yes" else ""
     local audioFlags = buildAudioFlags()
     local resFlag = buildResolutionFlag()
 
-    local flags = string.format(
-        '-w %s -f %d -k %s %s -q %s -cursor %s -cr %s %s %s -o "%s"',
-        source, fps, codec, audioFlags, quality, cursor, cr, resFlag, restore, outputPath
-    )
+    local flags = `-w {source} -f {fps} -k {codec} {audioFlags} -q {quality} -cursor {cursor} -cr {cr} {resFlag} {restore} -o "{outputPath}"`
 
-    return buildGsrPrefix() .. " " .. flags .. buildGsrSuffix() .. " " .. flags .. "\nfi"
+    return `{buildGsrPrefix()} {flags}{buildGsrSuffix()} {flags}\nfi`
 end
 
 local function buildReplayCommand()
@@ -208,18 +197,15 @@ local function buildReplayCommand()
     local fps = cfg("frame_rate")
     local codec = cfg("video_codec")
     local quality = cfg("quality")
-    local cursor = cfg("show_cursor") and "yes" or "no"
+    local cursor = if cfg("show_cursor") then "yes" else "no"
     local cr = cfg("color_range")
-    local restore = cfg("restore_portal") and "-restore-portal-session yes" or ""
+    local restore = if cfg("restore_portal") then "-restore-portal-session yes" else ""
     local audioFlags = buildAudioFlags()
     local resFlag = buildResolutionFlag()
 
-    local flags = string.format(
-        '-w %s -c mp4 -f %d -k %s %s -q %s -cursor %s -cr %s %s -r %d -replay-storage %s %s -o "%s"',
-        source, fps, codec, audioFlags, quality, cursor, cr, resFlag, duration, storage, restore, dir
-    )
+    local flags = `-w {source} -c mp4 -f {fps} -k {codec} {audioFlags} -q {quality} -cursor {cursor} -cr {cr} {resFlag} -r {duration} -replay-storage {storage} {restore} -o "{dir}"`
 
-    return buildGsrPrefix() .. " " .. flags .. buildGsrSuffix() .. " " .. flags .. "\nfi"
+    return `{buildGsrPrefix()} {flags}{buildGsrSuffix()} {flags}\nfi`
 end
 
 -- ── Portal check ─────────────────────────────────────────────────────────
@@ -238,7 +224,7 @@ local function checkPortalsAsync(callback)
             end
         end
 
-        pending = pending - 1
+        pending -= 1
         if pending == 0 then
             callback(hasPortal and hasBackend)
         end
@@ -295,7 +281,7 @@ local function startRecording()
 end
 
 local function stopRecording()
-    if state ~= "recording" and state ~= "pending" then return end
+    if not table.find(RECORDING_STATES, state) then return end
 
     noctalia.runAsync("pkill -SIGINT -f '^(/nix/store/.*-)?gpu-screen-recorder' 2>/dev/null || pkill -SIGINT -f '^com.dec05eba.gpu_screen_recorder' 2>/dev/null || true")
     -- Force kill fallback
@@ -344,7 +330,7 @@ local function startReplay()
 end
 
 local function stopReplay()
-    if state ~= "replaying" and state ~= "replay_pending" then return end
+    if not table.find(REPLAY_STATES, state) then return end
 
     noctalia.runAsync("pkill -SIGINT -f 'gpu-screen-recorder.*-r ' 2>/dev/null || true")
     noctalia.runAsync("(sleep 3 && pkill -9 -f 'gpu-screen-recorder.*-r ' 2>/dev/null || true) &")
@@ -363,7 +349,7 @@ end
 
 local function checkProcessState(processState)
     if state == "pending" then
-        pendingTick = pendingTick + CHECK_TICKS
+        pendingTick += CHECK_TICKS
         if pendingTick >= PENDING_TICKS then
             if processState == "recording" then
                 setState("recording")
@@ -372,7 +358,7 @@ local function checkProcessState(processState)
             end
         end
     elseif state == "replay_pending" then
-        pendingTick = pendingTick + CHECK_TICKS
+        pendingTick += CHECK_TICKS
         if pendingTick >= PENDING_TICKS then
             if processState == "replaying" then
                 setState("replaying")
@@ -424,7 +410,7 @@ end
 -- ── Callbacks ────────────────────────────────────────────────────────────
 
 function update()
-    tickCount = tickCount + 1
+    tickCount += 1
 
     if not checkedAvailability then
         checkedAvailability = true
@@ -445,7 +431,7 @@ function onIpc(event, payload)
     elseif event == "stop" then
         stopRecording()
     elseif event == "toggle" then
-        if state == "recording" or state == "pending" then
+        if table.find(RECORDING_STATES, state) then
             stopRecording()
         elseif state == "idle" then
             startRecording()
@@ -455,7 +441,7 @@ function onIpc(event, payload)
     elseif event == "replay-stop" then
         stopReplay()
     elseif event == "replay-toggle" then
-        if state == "replaying" or state == "replay_pending" then
+        if table.find(REPLAY_STATES, state) then
             stopReplay()
         elseif state == "idle" then
             startReplay()
@@ -463,13 +449,13 @@ function onIpc(event, payload)
     elseif event == "replay-save" or event == "save-replay" then
         saveReplay()
     else
-        noctalia.log("screen_recorder: unknown command '" .. tostring(event) .. "'")
+        noctalia.log(`screen_recorder: unknown command '{event}'`)
     end
 end
 
 -- The widget and shortcut drive the recorder by publishing to this channel.
 noctalia.state.watch("command", function(cmd)
-    local action = (type(cmd) == "table" and cmd.action) or cmd
+    local action = if type(cmd) == "table" and cmd.action ~= nil then cmd.action else cmd
     if type(action) == "string" then
         onIpc(action, nil)
     end

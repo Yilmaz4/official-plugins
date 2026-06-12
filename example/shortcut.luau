@@ -12,7 +12,7 @@
 local on = noctalia.state.get("toggle") == true
 
 local function render()
-  shortcut.setLabel(on and "Example On" or "Example Off")
+  shortcut.setLabel(if on then "Example On" else "Example Off")
   shortcut.setIcon("puzzle")
   shortcut.setActive(on)
   shortcut.setEnabled(true)

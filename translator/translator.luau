@@ -6,9 +6,7 @@
 -- Translation uses Google Translate's public `translate_a/single` endpoint.
 
 local DEFAULT_TARGET = noctalia.getConfig("target_lang")
-if type(DEFAULT_TARGET) ~= "string" or DEFAULT_TARGET == "" then
-  DEFAULT_TARGET = "en"
-end
+DEFAULT_TARGET = if type(DEFAULT_TARGET) == "string" and DEFAULT_TARGET ~= "" then DEFAULT_TARGET else "en"
 
 -- Common language aliases → ISO code. Any other 2–3 letter token is passed
 -- through to Google as-is, so uncommon languages still work.
@@ -42,14 +40,6 @@ local LANGUAGES = {
   zh = { "chinese", "chinois", "mandarin" },
 }
 
-local ALIAS_TO_CODE = {}
-for code, aliases in LANGUAGES do
-  ALIAS_TO_CODE[code] = code
-  for _, alias in aliases do
-    ALIAS_TO_CODE[alias] = code
-  end
-end
-
 -- target|text -> translation; pending guards against duplicate in-flight fetches.
 local cache = {}
 local pending = {}
@@ -60,15 +50,17 @@ end
 
 local function urlEncode(s)
   return (s:gsub("[^%w%-_%.~]", function(c)
-    return string.format("%%%02X", string.byte(c))
+    return string.format("%%%02X", c:byte())
   end))
 end
 
 -- Resolve a token to a language code: a known alias, or a bare 2–3 letter code.
 local function resolveLang(token)
   local lower = token:lower()
-  if ALIAS_TO_CODE[lower] then
-    return ALIAS_TO_CODE[lower]
+  for code, aliases in LANGUAGES do
+    if code == lower or table.find(aliases, lower) then
+      return code
+    end
   end
   if lower:match("^%a%a%a?$") then
     return lower
@@ -85,9 +77,10 @@ local function parseGoogle(body)
   end
   local parts = {}
   for _, segment in decoded[1] do
-    if type(segment) == "table" and type(segment[1]) == "string" then
-      parts[#parts + 1] = segment[1]
+    if type(segment) ~= "table" or type(segment[1]) ~= "string" then
+      continue
     end
+    table.insert(parts, segment[1])
   end
   if #parts == 0 then
     return nil
@@ -96,10 +89,7 @@ local function parseGoogle(body)
 end
 
 local function fetchGoogle(text, target, onDone)
-  local url = "https://translate.google.com/translate_a/single?client=gtx&sl=auto&tl="
-    .. urlEncode(target)
-    .. "&dt=t&q="
-    .. urlEncode(text)
+  local url = `https://translate.google.com/translate_a/single?client=gtx&sl=auto&tl={urlEncode(target)}&dt=t&q={urlEncode(text)}`
   noctalia.http({ url = url }, function(res)
     if not res.ok then
       onDone(nil, "Connection error — is the network up?")
@@ -122,7 +112,7 @@ local function resultRow(translated, target)
   return {
     id = translated,
     title = translated,
-    subtitle = "Translation (" .. target .. ") — press Enter to copy",
+    subtitle = `Translation ({target}) — press Enter to copy`,
     glyph = "language",
   }
 end
@@ -147,7 +137,7 @@ function onQuery(query)
     end
   else
     if resolveLang(text) then
-      launcher.setResults(query, { hintRow("Type text to translate", "Target language: " .. text, "language") })
+      launcher.setResults(query, { hintRow("Type text to translate", `Target language: {text}`, "language") })
       return
     end
     target = DEFAULT_TARGET
@@ -155,11 +145,11 @@ function onQuery(query)
   end
 
   if content == "" then
-    launcher.setResults(query, { hintRow("Type text to translate", "Target language: " .. target, "language") })
+    launcher.setResults(query, { hintRow("Type text to translate", `Target language: {target}`, "language") })
     return
   end
 
-  local key = target .. "|" .. content
+  local key = `{target}|{content}`
   local cached = cache[key]
   if cached then
     launcher.setResults(query, { resultRow(cached, target) })
