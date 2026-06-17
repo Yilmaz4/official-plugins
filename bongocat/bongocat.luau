@@ -1,13 +1,15 @@
 -- Bongo Cat — a cat that sits in your bar and slaps when you type or to the beat.
 --
--- Configure the keyboard device in the widget settings (input_device =
--- /dev/input/eventN). When set and `evtest` is installed, the widget reads it
--- with noctalia.runStream — one long-lived `evtest` whose lines are delivered
+-- Configure input devices in the widget settings (input_devices = [
+-- "/dev/input/by-id/...", "/dev/input/by-path/*-event-*"]). Prefer stable
+-- by-id/by-path entries over /dev/input/eventN because event numbers can change.
+-- When set and `evtest` is installed, the widget reads matching devices with
+-- noctalia.runStream — one long-lived shell stream whose lines are delivered
 -- straight to the script (no IPC, no per-keystroke process spawn). The stream is
 -- killed automatically when the widget reloads or is removed.
 --
 -- Requirements: `evtest` installed, and your user in the `input` group.
--- Find your keyboard device with: sudo evtest  (or: ls -l /dev/input/by-id)
+-- Find devices with: sudo evtest  (or: ls -l /dev/input/by-id /dev/input/by-path)
 --
 -- Audio reactivity (audio_spectrum) uses the PipeWire spectrum and delivers
 -- frames to onAudioSpectrum below.
@@ -139,7 +141,7 @@ local function onBeatTap(isBigHit)
   refreshDisplay()
 end
 
--- ── Keyboard reader (noctalia.runStream → evtest) ────────────────────────
+-- ── Input reader (noctalia.runStream → evtest) ────────────────────────────
 local function has(line, needle)
   return line:find(needle, 1, true) ~= nil
 end
@@ -160,22 +162,83 @@ local function onEvtestLine(line)
   end
 end
 
+local function isAllowedInputPatternByte(byte)
+  return (byte >= 48 and byte <= 57) -- 0-9
+      or (byte >= 65 and byte <= 90) -- A-Z
+      or (byte >= 97 and byte <= 122) -- a-z
+      or byte == 47 -- /
+      or byte == 46 -- .
+      or byte == 95 -- _
+      or byte == 45 -- -
+      or byte == 58 -- :
+      or byte == 43 -- +
+      or byte == 42 -- *
+      or byte == 63 -- ?
+      or byte == 91 -- [
+      or byte == 93 -- ]
+end
+
+local function isSupportedInputPattern(pattern)
+  return pattern:match("^/dev/input/event") ~= nil
+      or pattern:match("^/dev/input/by%-id/") ~= nil
+      or pattern:match("^/dev/input/by%-path/") ~= nil
+end
+
+local function validateInputPattern(pattern)
+  if type(pattern) ~= "string" or pattern == "" then
+    return false
+  end
+  if pattern:find("..", 1, true) ~= nil or not isSupportedInputPattern(pattern) then
+    return false
+  end
+  for i = 1, #pattern do
+    if not isAllowedInputPatternByte(pattern:byte(i)) then
+      return false
+    end
+  end
+  return true
+end
+
 local function startInputReader()
-  local device = barWidget.getConfig("input_device")
-  if device == nil or device == "" then
+  local devices = barWidget.getConfig("input_devices")
+  if devices == nil then
     return
   end
-  -- Only accept a real evdev node — this string is interpolated into a shell
-  -- command, so reject anything that isn't /dev/input/eventN.
-  if not device:match("^/dev/input/event%d+$") then
-    noctalia.notifyError("Bongo Cat", `Invalid input_device (expected /dev/input/eventN): {device}`)
+  if type(devices) ~= "table" then
+    noctalia.notifyError("Bongo Cat", "Invalid input_devices (expected a list of /dev/input paths or globs)")
+    return
+  end
+
+  local patterns = {}
+  local seen = {}
+  local warnedEventPath = false
+  for _, pattern in ipairs(devices) do
+    if not validateInputPattern(pattern) then
+      noctalia.notifyError("Bongo Cat", `Invalid input_devices entry: {tostring(pattern)}`)
+      return
+    end
+    if pattern:match("^/dev/input/event") ~= nil and not warnedEventPath then
+      warnedEventPath = true
+      noctalia.notify("Bongo Cat", "Prefer /dev/input/by-id or /dev/input/by-path; /dev/input/eventN can change.")
+    end
+    if seen[pattern] == nil then
+      seen[pattern] = true
+      table.insert(patterns, pattern)
+    end
+  end
+  if #patterns == 0 then
     return
   end
   if not noctalia.commandExists("evtest") then
-    noctalia.notifyError("Bongo Cat", "evtest is not installed — cannot read keyboard input")
+    noctalia.notifyError("Bongo Cat", "evtest is not installed — cannot read input devices")
     return
   end
-  noctalia.runStream(`evtest '{device}' 2>/dev/null`, onEvtestLine)
+
+  local command = "for device in " .. table.concat(patterns, " ")
+      .. '; do [ -e "$device" ] || continue; evtest "$device" 2>/dev/null & done; wait'
+  if not noctalia.runStream(command, onEvtestLine) then
+    noctalia.notifyError("Bongo Cat", "Unable to start input device reader")
+  end
 end
 
 startInputReader()

@@ -1,12 +1,13 @@
 # Bongo Cat — a cat that sits in your bar and slaps when you type or to the beat.
 #
-# Keyboard reactivity needs `evtest` installed and your user in the `input` group;
-# set the keyboard device in the widget settings. Audio reactivity uses the
+# Input reactivity needs `evtest` installed and your user in the `input` group;
+# set input devices in the widget settings. Prefer stable /dev/input/by-id/ or
+# /dev/input/by-path/ entries over /dev/input/eventN. Audio reactivity uses the
 # PipeWire spectrum.
 
 id = "noctalia/bongocat"
 name = "Bongo Cat"
-version = "1.0.1"
+version = "1.1.0"
 min_noctalia = "5.0.0"
 author = "noctalia"
 license = "MIT"
@@ -19,10 +20,11 @@ id = "cat"
 entry = "bongocat.luau"
 
   [[widget.setting]]
-  key = "input_device"
-  type = "file"
-  label = "Keyboard device"
-  description = "/dev/input/eventN — requires evtest and membership in the input group"
+  key = "input_devices"
+  type = "string_list"
+  label = "Input devices"
+  description = "Prefer /dev/input/by-id/*-event-* or /dev/input/by-path/*-event-*; /dev/input/eventN can change after kernel or device updates"
+  default = []
 
   [[widget.setting]]
   key = "audio_spectrum"
