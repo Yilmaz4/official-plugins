@@ -6,13 +6,13 @@
 [[plugin]]
 id = "noctalia/example"
 name = "Example"
-version = "1.0.2"
+version = "1.0.3"
 author = "noctalia"
 license = "MIT"
 icon = "puzzle"
-description = "A minimal reference plugin: a bar widget with settings, click handling, and IPC."
+description = "A minimal reference plugin: a bar widget with settings and IPC, a service, a shortcut, and a launcher provider with setQuery drill-in."
 min_noctalia = "5.0.0"
-tags = ["example", "demo"]
+tags = ["example", "demo", "launcher"]
 
 [[plugin]]
 id = "noctalia/screen_recorder"
