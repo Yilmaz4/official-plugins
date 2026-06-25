@@ -506,21 +506,23 @@ render = function()
       wallpaperGrid(),
     }),
 
-    ui.row({ align = "center", justify = "space_between", gap = 8 }, {
-      ui.button({
-        key = "prev_page",
-        glyph = "chevron-left",
-        variant = "ghost",
-        onClick = "onPrevPage",
-        enabled = not loading and page > 1,
-      }),
-      ui.label({ text = pageLabel, color = "on_surface_variant" }),
-      ui.button({
-        key = "next_page",
-        glyph = "chevron-right",
-        variant = "ghost",
-        onClick = "onNextPage",
-        enabled = not loading and page < totalPages,
+    ui.row({ align = "center", justify = "center" }, {
+      ui.row({ gap = 8, align = "center" }, {
+        ui.button({
+          key = "prev_page",
+          glyph = "chevron-left",
+          variant = "ghost",
+          onClick = "onPrevPage",
+          enabled = not loading and page > 1,
+        }),
+        ui.label({ text = pageLabel, color = "on_surface_variant" }),
+        ui.button({
+          key = "next_page",
+          glyph = "chevron-right",
+          variant = "ghost",
+          onClick = "onNextPage",
+          enabled = not loading and page < totalPages,
+        }),
       }),
     }),
   }))
