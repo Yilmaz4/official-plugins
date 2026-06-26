@@ -8,7 +8,7 @@ Translate and copies the selected result to the clipboard.
 | Field | Value |
 | --- | --- |
 | ID | `noctalia/translator` |
-| Version | `1.0.2` |
+| Version | `1.0.4` |
 | Minimum Noctalia | `5.0.0` |
 | Entry | Launcher provider: `translate` |
 | Prefix | `/tr` |

@@ -104,23 +104,24 @@ local function resultRow(translated, target)
     title = translated,
     subtitle = `Translation ({target}) — press Enter to copy`,
     glyph = "language",
+    presentation = "detail",
   }
 end
 
 function onQuery(query)
-  local text = noctalia.string.trim(query:gsub("%s+", " "))
+  local text = noctalia.string.trim(query)
   if text == "" then
     launcher.setResults(query, { hintRow("Translate text", "Type: <lang> <text> — e.g. es hello", "language") })
     return
   end
 
-  local first, rest = text:match("^(%S+)%s+(.*)$")
+  local first, rest = text:match("^(%S+)%s+([%s%S]*)$")
   local target, content
   if first then
     local code = resolveLang(first)
     if code then
       target = code
-      content = noctalia.string.trim(rest)
+      content = rest
     else
       target = DEFAULT_TARGET
       content = text
@@ -134,7 +135,7 @@ function onQuery(query)
     content = text
   end
 
-  if content == "" then
+  if noctalia.string.trim(content) == "" then
     launcher.setResults(query, { hintRow("Type text to translate", `Target language: {target}`, "language") })
     return
   end
