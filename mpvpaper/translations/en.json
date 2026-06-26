@@ -4,5 +4,15 @@
   "all_outputs": "All outputs",
   "stop": "Stop",
   "empty": "No videos found in the configured directory",
-  "not_installed": "mpvpaper is not installed"
+  "not_installed": "mpvpaper is not installed",
+  "settings.video_directory.label": "Video directory",
+  "settings.video_directory.description": "Folder scanned for wallpaper videos. Defaults to ~/Videos when empty.",
+  "settings.mute.label": "Mute audio",
+  "settings.hardware_decode.label": "Hardware decoding",
+  "settings.hardware_decode.description": "Use GPU video decoding (mpv hwdec=auto).",
+  "settings.auto_pause.label": "Pause when covered",
+  "settings.auto_pause.description": "Pause playback while a fullscreen window covers the wallpaper (mpvpaper --auto-pause).",
+  "settings.mpv_options.label": "Extra mpv options",
+  "settings.mpv_options.description": "Additional space-separated mpv options, e.g. panscan=1.0 video-zoom=0.1",
+  "settings.glyph.label": "Glyph"
 }
