@@ -21,6 +21,8 @@ Install `gpu-screen-recorder` on `PATH`, or install the Flatpak app
 `xdg-desktop-portal-wlr`, `xdg-desktop-portal-hyprland`,
 `xdg-desktop-portal-gnome`, or `xdg-desktop-portal-kde`.
 
+- **[gpu-screen-recorder](https://git.dec05eba.com/gpu-screen-recorder/about/)** — Hardware-accelerated screen recording
+
 Recordings are saved to the configured output directory. When the directory is
 empty, the plugin uses `~/Videos/Recordings`.
 
