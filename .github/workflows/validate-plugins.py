@@ -321,13 +321,25 @@ class Validator:
                 self.add_context_error(manifest_path, category_context, "glyph must be a non-empty string")
 
     def validate_panel_fields(self, manifest_path: Path, context: str, entry: dict[str, Any]) -> None:
+        # Mirrors the shell parser: a positive number (logical px) or the
+        # literal string "fill" (span the output's available extent; requires
+        # floating placement).
+        uses_fill = False
         for field in ("width", "height"):
             if field not in entry:
                 continue
 
             value = entry[field]
-            if not is_number(value) or value < 0:
-                self.add_context_error(manifest_path, context, f"{field} must be a non-negative number")
+            if isinstance(value, str):
+                if value != "fill":
+                    self.add_context_error(manifest_path, context, f'{field} must be a positive number or "fill"')
+                else:
+                    uses_fill = True
+            elif not is_number(value) or value <= 0:
+                self.add_context_error(manifest_path, context, f'{field} must be a positive number or "fill"')
+
+        if uses_fill and entry.get("placement", "floating") != "floating":
+            self.add_context_error(manifest_path, context, 'width/height "fill" requires placement = "floating"')
 
         if "placement" in entry:
             placement = entry["placement"]
