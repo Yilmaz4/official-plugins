@@ -274,6 +274,7 @@ declare panel: {
 --   function onAudioSpectrum(valuesCsv, stateCsv) end -- audio-reactive bar widget
 --   function onOpen(context) / onClose() end    -- panel lifecycle
 --   function onConfigChanged() end              -- service: plugin settings changed; getConfig() now returns new values
+--   function onExit(signal) end                  -- any entry teardown (0 normally, 2 for SIGINT, 15 for SIGTERM)
 --
 -- These are intentionally NOT declared here: declaring them as globals makes
 -- luau-lsp treat your definition as overwriting a built-in.
