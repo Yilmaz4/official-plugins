@@ -8,7 +8,7 @@
 --
 --   panel.render(tree)              replace the panel's UI tree
 --   panel.close()                   ask the host to close this panel
---   panel.getConfig(key)            settings (seeded from the manifest)
+--   noctalia.getConfig(key)         settings (seeded from the manifest)
 --   noctalia.openColorPicker(...)   open the native color picker asynchronously
 --   button/toggle/slider/...        onClick / onChange call the plugin global of
 --                                   that name; values arrive as string args

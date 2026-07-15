@@ -200,7 +200,6 @@ declare barWidget: {
   -- Declarative alternative to setText/setGlyph: the tree replaces the built-in
   -- glyph/text row. ui.input/ui.select/ui.scroll are not supported in the bar.
   render: (tree: UiNode) -> (),
-  getConfig: (key: string) -> any, -- string | number | boolean | {string} | nil
 }
 
 -- ── shortcut.* — [[shortcut]] quick-toggle tile ──────────────────────────────
@@ -240,7 +239,6 @@ declare ui: {
 declare launcher: {
   setResults: (query: string, results: { LauncherResult }) -> (),
   setQuery: (text: string) -> (), -- set input to this provider's prefix + text (stays in provider); "" resets to root
-  getConfig: (key: string) -> any, -- string | number | boolean | {string} | nil
 }
 
 -- ── desktopWidget.* — [[desktop_widget]] declarative UI ──────────────────────
@@ -249,7 +247,6 @@ declare desktopWidget: {
   render: (tree: UiNode) -> (),
   setWantsSecondTicks: (wants: boolean) -> (),
   setNeedsFrameTick: (needs: boolean) -> (),
-  getConfig: (key: string) -> any, -- string | number | boolean | {string} | nil
 }
 
 -- ── panel.* — [[panel]] declarative UI ───────────────────────────────────────
@@ -258,7 +255,6 @@ declare panel: {
   render: (tree: UiNode) -> (),
   close: () -> (),
   setWantsSecondTicks: (wants: boolean) -> (),
-  getConfig: (key: string) -> any, -- string | number | boolean | {string} | nil
 }
 
 -- ── Entry-point callbacks ────────────────────────────────────────────────────

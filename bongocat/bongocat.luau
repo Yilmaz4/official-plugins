@@ -42,10 +42,10 @@ local paused = false
 local waiting = false
 local blinking = false
 
-local AUDIO_SPECTRUM_ENABLED = barWidget.getConfig("audio_spectrum") == true
-local RAVE_MODE = barWidget.getConfig("rave_mode") == true
-local TAPPY_MODE = barWidget.getConfig("tappy_mode") == true
-local USE_MPRIS_FILTER = barWidget.getConfig("use_mpris_filter") == true
+local AUDIO_SPECTRUM_ENABLED = noctalia.getConfig("audio_spectrum") == true
+local RAVE_MODE = noctalia.getConfig("rave_mode") == true
+local TAPPY_MODE = noctalia.getConfig("tappy_mode") == true
+local USE_MPRIS_FILTER = noctalia.getConfig("use_mpris_filter") == true
 
 local idleTicks = 0
 local waitingTicks = 0
@@ -204,7 +204,7 @@ local function validateInputPattern(pattern)
 end
 
 local function startInputReader()
-  local devices = barWidget.getConfig("input_devices")
+  local devices = noctalia.getConfig("input_devices")
   if devices == nil then
     return
   end
@@ -234,7 +234,7 @@ local function startInputReader()
     return
   end
 
-  local executable = barWidget.getConfig("executable_path")
+  local executable = noctalia.getConfig("executable_path")
 
   if executable == nil or executable == "" then
     executable = "evtest"

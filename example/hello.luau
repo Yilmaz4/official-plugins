@@ -4,7 +4,7 @@
 --
 -- Demonstrates the capability surface:
 --   barWidget.*          presentation (text / glyph / tooltip)
---   barWidget.getConfig  settings (seeded from the manifest; single-arg, no fallback)
+--   noctalia.getConfig   settings (seeded from the manifest; single-arg, no fallback)
 --   noctalia.tr / trp    translation against this plugin's translations/<lang>.json
 --   noctalia.readFile    filesystem, resolved relative to the plugin's own dir
 --   noctalia.http        async HTTP (off-thread; response delivered back as a callback)
@@ -16,9 +16,9 @@
 --   noctalia msg plugin noctalia/example:hello focused set "Hi there"
 --   noctalia msg plugin noctalia/example:hello focused fetch "https://example.com"
 
-local label = barWidget.getConfig("label")
-local glyph = barWidget.getConfig("glyph")
-local showGlyph = barWidget.getConfig("show_glyph")
+local label = noctalia.getConfig("label")
+local glyph = noctalia.getConfig("glyph")
+local showGlyph = noctalia.getConfig("show_glyph")
 
 local clicks = 0
 local dataNote = noctalia.readFile("data.txt") or "(no data file)"

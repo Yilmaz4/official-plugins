@@ -8,12 +8,12 @@
 --
 --   desktopWidget.render(tree)            replace the widget's UI tree
 --   desktopWidget.setWantsSecondTicks(b)  tick update() on second boundaries
---   desktopWidget.getConfig(key)          settings (seeded from the manifest)
+--   noctalia.getConfig(key)               settings (seeded from the manifest)
 --   button onClick = "name"               calls the plugin global of that name
 
-local duration = desktopWidget.getConfig("duration")
-local color = desktopWidget.getConfig("color")
-local showProgress = desktopWidget.getConfig("show_progress")
+local duration = noctalia.getConfig("duration")
+local color = noctalia.getConfig("color")
+local showProgress = noctalia.getConfig("show_progress")
 
 local remaining = duration
 local running = false
