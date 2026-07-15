@@ -146,6 +146,10 @@ export type Noctalia = {
   fileInfo: (path: string) -> ({ size: number, mtime: number, isDir: boolean }?, string?),
   listDir: (path: string) -> ({ string }?, string?),
   pluginDir: () -> string?,
+  -- Per-plugin persistent data dir, created on demand. Survives plugin updates
+  -- and honors the NOCTALIA_STATE_HOME override. Use for durable data (state is
+  -- in-memory only). Returns the absolute path, or (nil, err).
+  pluginDataDir: () -> (string?, string?),
 
   -- Register a font file (path resolves like readFile) so its family becomes
   -- usable in setFont / a ui label's fontFamily. Returns the family name, or
