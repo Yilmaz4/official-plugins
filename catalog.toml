@@ -63,7 +63,7 @@ tags = ["countdown", "desktop"]
 [[plugin]]
 id = "noctalia/wallhaven"
 name = "Wallhaven"
-version = "1.0.6"
+version = "1.0.7"
 author = "noctalia"
 license = "MIT"
 icon = "photo"
