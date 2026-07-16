@@ -13,7 +13,7 @@
 id = "noctalia/screen_recorder"
 name = "Screen Recorder"
 version = "1.2.0"
-min_noctalia = "5.0.0"
+plugin_api = 3
 author = "noctalia"
 license = "MIT"
 dependencies = ["gpu-screen-recorder"]

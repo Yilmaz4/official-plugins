@@ -1,7 +1,7 @@
 id = "noctalia/kaomoji"
 name = "Kaomoji"
 version = "1.0.1"
-min_noctalia = "5.0.0"
+plugin_api = 3
 author = "noctalia"
 license = "MIT"
 dependencies = []

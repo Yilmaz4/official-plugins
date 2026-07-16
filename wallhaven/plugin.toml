@@ -1,7 +1,7 @@
 id = "noctalia/wallhaven"
 name = "Wallhaven"
 version = "1.0.7"
-min_noctalia = "5.0.0"
+plugin_api = 3
 author = "noctalia"
 license = "MIT"
 dependencies = []

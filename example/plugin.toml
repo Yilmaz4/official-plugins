@@ -7,7 +7,7 @@
 id = "noctalia/example"
 name = "Example"
 version = "1.2.2"
-min_noctalia = "5.0.0"
+plugin_api = 3
 author = "noctalia"
 license = "MIT"
 dependencies = []

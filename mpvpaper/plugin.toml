@@ -11,7 +11,7 @@
 id = "noctalia/mpvpaper"
 name = "Video Wallpaper"
 version = "1.0.5"
-min_noctalia = "5.0.0"
+plugin_api = 3
 author = "noctalia"
 license = "MIT"
 dependencies = ["mpvpaper", "mpv"]

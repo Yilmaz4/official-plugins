@@ -19,7 +19,6 @@ ROOT_STRING_FIELDS = (
     "id",
     "name",
     "version",
-    "min_noctalia",
     "author",
     "license",
     "icon",
@@ -46,6 +45,7 @@ PANEL_POSITIONS = {
 ROOT_FIELDS = set(ROOT_STRING_FIELDS) | set(ROOT_ARRAY_FIELDS) | set(ENTRY_TYPES) | {
     "setting",
     "deprecated",
+    "plugin_api",
 }
 BASE_ENTRY_FIELDS = {"id", "entry"}
 ENTRY_FIELDS = {
@@ -248,15 +248,20 @@ class Validator:
         if "deprecated" in manifest and not isinstance(manifest["deprecated"], bool):
             self.add_error(manifest_path, "root field 'deprecated' must be a bool")
 
+        plugin_api = manifest.get("plugin_api")
+        if "plugin_api" not in manifest:
+            self.add_error(manifest_path, "missing required root field 'plugin_api'")
+        elif not is_int(plugin_api) or plugin_api <= 0:
+            self.add_error(manifest_path, "root field 'plugin_api' must be a positive integer")
+
         plugin_dir = manifest_path.parent.name
         expected_id = f"noctalia/{plugin_dir}"
         if is_non_empty_string(manifest.get("id")) and manifest["id"] != expected_id:
             self.add_error(manifest_path, f"id must be '{expected_id}'")
 
-        for field in ("version", "min_noctalia"):
-            value = manifest.get(field)
-            if is_non_empty_string(value) and not SEMVER_RE.fullmatch(value):
-                self.add_error(manifest_path, f"root field '{field}' must use MAJOR.MINOR.PATCH")
+        version = manifest.get("version")
+        if is_non_empty_string(version) and not SEMVER_RE.fullmatch(version):
+            self.add_error(manifest_path, "root field 'version' must use MAJOR.MINOR.PATCH")
 
     def validate_entry_path(self, manifest_path: Path, context: str, plugin_dir: Path, value: Any) -> None:
         if not is_non_empty_string(value):

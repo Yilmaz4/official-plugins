@@ -6,7 +6,7 @@
 id = "noctalia/timer"
 name = "Timer"
 version = "1.0.2"
-min_noctalia = "5.0.0"
+plugin_api = 3
 author = "noctalia"
 license = "MIT"
 dependencies = []
