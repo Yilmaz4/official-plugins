@@ -37,6 +37,15 @@ export type HttpResponse = {
   body: string,
 }
 
+export type HttpStreamResult = {
+  ok: boolean, -- transport success (not the HTTP status)
+  status: number, -- HTTP status code (0 when ok is false)
+}
+
+export type HttpStreamHandle = {
+  stop: () -> (), -- cancel the stream; idempotent, suppresses onClose
+}
+
 export type Output = {
   name: string,
   description: string,
@@ -162,6 +171,17 @@ export type Noctalia = {
 
   -- HTTP (honors shell.offline_mode; download dest resolves like readFile).
   http: (req: HttpRequest, onResponse: (response: HttpResponse) -> ()) -> boolean,
+  -- Long-lived streaming request (e.g. SSE). onLine fires per received line (CR
+  -- trimmed); onClose fires exactly once when the transfer ends, unless the
+  -- stream was stopped via the handle. Non-2xx responses are not special-cased:
+  -- their body streams to onLine and the status arrives in onClose. Streams are
+  -- cancelled on script reload. Requires plugin_api >= 4. Returns nil when the
+  -- stream could not be started.
+  httpStream: (
+    req: HttpRequest,
+    onLine: (line: string) -> (),
+    onClose: (result: HttpStreamResult) -> ()
+  ) -> HttpStreamHandle?,
   download: (url: string, destPath: string, onDone: (success: boolean) -> ()) -> boolean,
 
   fuzzyScore: (pattern: string, text: string) -> number?, -- nil if no match
