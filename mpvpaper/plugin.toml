@@ -10,7 +10,7 @@
 
 id = "noctalia/mpvpaper"
 name = "Video Wallpaper"
-version = "1.0.5"
+version = "1.0.6"
 plugin_api = 3
 author = "noctalia"
 license = "MIT"
@@ -69,7 +69,7 @@ default = true
 
 [[setting]]
 key = "cpu_quota"
-type = "number"
+type = "int"
 label_key = "settings.cpu_quota.label"
 default = 0
 min = 0
@@ -93,7 +93,7 @@ visible_when = { key = "run_as_systemd", values = ["true"] }
 
 [[setting]]
 key = "cpu_weight"
-type = "number"
+type = "int"
 label_key = "settings.cpu_weight.label"
 default = 0
 min = 0
@@ -103,7 +103,7 @@ visible_when = { key = "run_as_systemd", values = ["true"] }
 
 [[setting]]
 key = "nice"
-type = "number"
+type = "int"
 label_key = "settings.nice.label"
 default = 0
 min = -20
