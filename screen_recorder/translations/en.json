@@ -1,120 +1,120 @@
 {
-  "shortcut": {
-    "recording": "Recording",
-    "replay-buffer": "Replay buffer",
-    "record-screen": "Record screen"
-  },
   "notify": {
-    "recording-saved": "Recording saved",
-    "recording-failed": "Recording failed",
-    "replay-failed": "Replay failed",
+    "launch-failed": "Could not launch gpu-screen-recorder",
     "no-monitor": "Could not detect focused monitor",
     "portal-not-running": "xdg-desktop-portal is not running",
-    "launch-failed": "Could not launch gpu-screen-recorder",
-    "replay-stopped": "Replay buffer stopped",
-    "replay-saved": "Replay saved",
+    "recording-failed": "Recording failed",
+    "recording-saved": "Recording saved",
+    "recording-stopped-early": "gpu-screen-recorder exited without saving. Check the Noctalia log for details.",
     "replay-active": "Replay buffer active",
-    "recording-stopped-early": "gpu-screen-recorder exited without saving. Check the Noctalia log for details."
+    "replay-failed": "Replay failed",
+    "replay-saved": "Replay saved",
+    "replay-stopped": "Replay buffer stopped"
   },
   "settings": {
-    "video_source": {
-      "label": "Video source",
-      "description": "GPU Screen Recorder capture mode. Focused records Noctalia's focused monitor.",
-      "options": {
-        "focused": "Focused",
-        "portal": "Portal"
-      }
-    },
-    "directory": {
-      "label": "Output directory",
-      "description": "Defaults to ~/Videos/Recordings when empty"
-    },
-    "filename_pattern": {
-      "label": "Filename pattern",
-      "description": "Date-format pattern without extension; use %s for Unix timestamp"
-    },
-    "frame_rate": {
-      "label": "Frame rate"
-    },
-    "video_codec": {
-      "label": "Video codec",
-      "options": {
-        "h264": "H.264",
-        "hevc": "HEVC",
-        "av1": "AV1",
-        "vp8": "VP8",
-        "vp9": "VP9"
-      }
-    },
-    "quality": {
-      "label": "Quality",
-      "options": {
-        "medium": "Medium",
-        "high": "High",
-        "very_high": "Very high",
-        "ultra": "Ultra"
-      }
-    },
-    "resolution": {
-      "label": "Resolution",
-      "description": "\"original\" or WIDTHxHEIGHT, e.g. 1920x1080"
-    },
-    "audio_source": {
-      "label": "Audio source",
-      "options": {
-        "default_output": "System output",
-        "default_input": "Microphone",
-        "both": "Output + microphone",
-        "none": "No audio"
-      }
+    "audio_bitrate": {
+      "description": "0 = automatic (128 for Opus/FLAC, 160 for AAC). Lower it for smaller files.",
+      "label": "Audio bitrate (kbps)"
     },
     "audio_codec": {
       "label": "Audio codec",
       "options": {
-        "opus": "Opus",
         "aac": "AAC",
-        "flac": "FLAC"
+        "flac": "FLAC",
+        "opus": "Opus"
       }
     },
-    "audio_bitrate": {
-      "label": "Audio bitrate (kbps)",
-      "description": "0 = automatic (128 for Opus/FLAC, 160 for AAC). Lower it for smaller files."
-    },
-    "show_cursor": {
-      "label": "Show cursor"
+    "audio_source": {
+      "label": "Audio source",
+      "options": {
+        "both": "Output + microphone",
+        "default_input": "Microphone",
+        "default_output": "System output",
+        "none": "No audio"
+      }
     },
     "color_range": {
       "label": "Color range",
       "options": {
-        "limited": "Limited",
-        "full": "Full"
+        "full": "Full",
+        "limited": "Limited"
       }
     },
     "copy_to_clipboard": {
       "label": "Copy path to clipboard"
     },
+    "directory": {
+      "description": "Defaults to ~/Videos/Recordings when empty",
+      "label": "Output directory"
+    },
+    "filename_pattern": {
+      "description": "Date-format pattern without extension; use %s for Unix timestamp",
+      "label": "Filename pattern"
+    },
+    "frame_rate": {
+      "label": "Frame rate"
+    },
     "hide_inactive": {
       "label": "Hide widget when idle"
     },
-    "replay_enabled": {
-      "label": "Enable replay buffer"
+    "quality": {
+      "label": "Quality",
+      "options": {
+        "high": "High",
+        "medium": "Medium",
+        "ultra": "Ultra",
+        "very_high": "Very high"
+      }
     },
     "replay_duration": {
       "label": "Replay seconds"
     },
+    "replay_enabled": {
+      "label": "Enable replay buffer"
+    },
     "replay_filename_pattern": {
-      "label": "Replay filename pattern",
-      "description": "Date-format pattern for saved replays without extension; use %s for Unix timestamp"
+      "description": "Date-format pattern for saved replays without extension; use %s for Unix timestamp",
+      "label": "Replay filename pattern"
     },
     "replay_storage": {
       "label": "Replay storage",
       "options": {
-        "ram": "RAM",
-        "disk": "Disk"
+        "disk": "Disk",
+        "ram": "RAM"
       }
+    },
+    "resolution": {
+      "description": "\"original\" or WIDTHxHEIGHT, e.g. 1920x1080",
+      "label": "Resolution"
     },
     "restore_portal": {
       "label": "Restore portal session"
+    },
+    "show_cursor": {
+      "label": "Show cursor"
+    },
+    "video_codec": {
+      "label": "Video codec",
+      "options": {
+        "av1": "AV1",
+        "h264": "H.264",
+        "hevc": "HEVC",
+        "vp8": "VP8",
+        "vp9": "VP9"
+      }
+    },
+    "video_source": {
+      "description": "GPU Screen Recorder capture mode. Focused records Noctalia's focused monitor.",
+      "label": "Video source",
+      "options": {
+        "focused": "Focused",
+        "portal": "Portal"
+      }
     }
+  },
+  "shortcut": {
+    "record-screen": "Record screen",
+    "recording": "Recording",
+    "replay-buffer": "Replay buffer"
   }
 }

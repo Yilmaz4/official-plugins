@@ -1,31 +1,43 @@
 {
-  "title": "Wallhaven",
-  "search_placeholder": "Szukaj tagów (np. natura, miasto nocą)",
-  "search": "Szukaj",
-  "loading": "Ładowanie tapet…",
+  "applied": "Tapeta zastosowana",
+  "apply_failed": "Nie udało się zastosować tapety",
+  "applying": "Pobieranie…",
+  "category_anime": "Anime",
+  "category_general": "Ogólne",
+  "category_people": "Ludzie",
+  "download_failed": "Pobieranie nie powiodło się",
   "empty": "Nie znaleziono tapet.",
   "error": "Żądanie nie powiodło się",
-  "applying": "Pobieranie…",
-  "applied": "Tapeta zastosowana",
-  "download_failed": "Pobieranie nie powiodło się",
-  "apply_failed": "Nie udało się zastosować tapety",
-  "purity_sfw": "SFW",
-  "purity_sketchy": "Greniczne",
-  "purity_nsfw": "NSFW",
-  "category_general": "Ogólne",
-  "category_anime": "Anime",
-  "category_people": "Ludzie",
   "filter_categories": "Kategorie",
   "filter_purity": "Treść",
   "filter_sort": "Sortowanie",
-  "sort.options.date_added": "Data dodania",
-  "sort.options.relevance": "Trafność",
-  "sort.options.views": "Wyświetlenia",
-  "sort.options.favorites": "Ulubione",
-  "sort.options.random": "Losowo",
-  "settings.api_key.label": "Klucz API",
-  "settings.api_key.description": "Opcjonalny klucz API Wallhaven dla wyższych limitów i dostępu NSFW.",
-  "settings.download_dir.label": "Katalog pobierania",
-  "settings.download_dir.description": "Opcjonalne nadpisanie dla pobierania w pełnej rozdzielczości. Puste używa folderu tapet Noctalia.",
-  "settings.glyph.label": "Glif paska"
+  "loading": "Ładowanie tapet…",
+  "purity_nsfw": "NSFW",
+  "purity_sfw": "SFW",
+  "purity_sketchy": "Greniczne",
+  "search": "Szukaj",
+  "search_placeholder": "Szukaj tagów (np. natura, miasto nocą)",
+  "settings": {
+    "api_key": {
+      "description": "Opcjonalny klucz API Wallhaven dla wyższych limitów i dostępu NSFW.",
+      "label": "Klucz API"
+    },
+    "download_dir": {
+      "description": "Opcjonalne nadpisanie dla pobierania w pełnej rozdzielczości. Puste używa folderu tapet Noctalia.",
+      "label": "Katalog pobierania"
+    },
+    "glyph": {
+      "label": "Glif paska"
+    }
+  },
+  "sort": {
+    "options": {
+      "date_added": "Data dodania",
+      "favorites": "Ulubione",
+      "random": "Losowo",
+      "relevance": "Trafność",
+      "views": "Wyświetlenia"
+    }
+  },
+  "title": "Wallhaven"
 }

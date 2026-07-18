@@ -1,29 +1,57 @@
 {
-  "title": "Video Wallpaper",
-  "output": "Output",
   "all_outputs": "All outputs",
-  "stop": "Stop",
-  "pause": "Pause",
-  "resume": "Resume",
   "empty": "No videos found in the configured directory",
   "not_installed": "mpvpaper is not installed",
-  "settings.video_directory.label": "Video directory",
-  "settings.video_directory.description": "Folder scanned for wallpaper videos. Defaults to ~/Videos when empty.",
-  "settings.mute.label": "Mute audio",
-  "settings.hardware_decode.label": "Hardware decoding",
-  "settings.hardware_decode.description": "Use GPU video decoding (mpv hwdec=auto).",
-  "settings.auto_pause.label": "Pause when covered",
-  "settings.auto_pause.description": "Pause playback while a fullscreen window covers the wallpaper (mpvpaper --auto-pause).",
-  "settings.mpv_options.label": "Extra mpv options",
-  "settings.mpv_options.description": "Additional space-separated mpv options, e.g. panscan=1.0 video-zoom=0.1",
-  "settings.glyph.label": "Glyph",
-  "settings.run_as_systemd.label": "Run as systemd service",
-  "settings.run_as_systemd.description": "Run the wallpaper in a systemd transient scope to enforce strict resource limits.",
-  "settings.extract_last_frame.label": "Static fallback frame",
-  "settings.extract_last_frame.description": "Automatically extract a frame from the video to use as the static wallpaper when playback is stopped.",
-  "settings.cpu_quota.label": "CPU Quota",
-  "settings.allowed_cpus.label": "Allowed CPUs",
-  "settings.memory_max.label": "Max Memory",
-  "settings.cpu_weight.label": "CPU Weight",
-  "settings.nice.label": "Nice value"
+  "output": "Output",
+  "pause": "Pause",
+  "resume": "Resume",
+  "settings": {
+    "allowed_cpus": {
+      "label": "Allowed CPUs"
+    },
+    "auto_pause": {
+      "description": "Pause playback while a fullscreen window covers the wallpaper (mpvpaper --auto-pause).",
+      "label": "Pause when covered"
+    },
+    "cpu_quota": {
+      "label": "CPU Quota"
+    },
+    "cpu_weight": {
+      "label": "CPU Weight"
+    },
+    "extract_last_frame": {
+      "description": "Automatically extract a frame from the video to use as the static wallpaper when playback is stopped.",
+      "label": "Static fallback frame"
+    },
+    "glyph": {
+      "label": "Glyph"
+    },
+    "hardware_decode": {
+      "description": "Use GPU video decoding (mpv hwdec=auto).",
+      "label": "Hardware decoding"
+    },
+    "memory_max": {
+      "label": "Max Memory"
+    },
+    "mpv_options": {
+      "description": "Additional space-separated mpv options, e.g. panscan=1.0 video-zoom=0.1",
+      "label": "Extra mpv options"
+    },
+    "mute": {
+      "label": "Mute audio"
+    },
+    "nice": {
+      "label": "Nice value"
+    },
+    "run_as_systemd": {
+      "description": "Run the wallpaper in a systemd transient scope to enforce strict resource limits.",
+      "label": "Run as systemd service"
+    },
+    "video_directory": {
+      "description": "Folder scanned for wallpaper videos. Defaults to ~/Videos when empty.",
+      "label": "Video directory"
+    }
+  },
+  "stop": "Stop",
+  "title": "Video Wallpaper"
 }
