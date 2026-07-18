@@ -1,16 +1,18 @@
-# Reference [[desktop_widget]] plugin: a countdown timer built from the
-# declarative ui.* vocabulary (desktopWidget.render). Demonstrates the full
-# desktop-widget pipeline: manifest -> appears in the desktop-widget editor ->
-# declarative control tree -> button callbacks -> second ticks -> settings.
+# Reference multi-entry plugin: a countdown timer whose bar widget, panel, and
+# desktop widget are all thin UI clients of one headless service, sharing a
+# single timer through noctalia.state. Demonstrates:
 #
-# Also includes bar widget, panel, and service entries. Demonstrates:
-# bar -> declarative UI with per-placement settings
-# panel -> interactive controls with state sharing via noctalia.state
-# service -> headless countdown logic with command handling
+# service -> headless countdown logic + state, with command handling (START/PAUSE/RESET)
+# bar     -> declarative UI with per-placement settings; opens the panel
+# panel   -> interactive controls (typed duration input) driving the service
+# desktop -> keyboard-free +/- duration adjusters + a progress bar, pinned to the desktop
+#
+# All three UI entries watch noctalia.state, so they reflect and control the
+# same countdown live.
 
 id = "noctalia/timer"
 name = "Timer"
-version = "1.1.0"
+version = "1.2.0"
 plugin_api = 3
 author = "noctalia"
 license = "MIT"
@@ -46,16 +48,6 @@ entry = "service.luau"
 [[desktop_widget]]
 id = "desktop"
 entry = "desktop.luau"
-
-  [[desktop_widget.setting]]
-  key = "duration"
-  type = "int"
-  label_key = "settings.duration.label"
-  description_key = "settings.duration.description"
-  default = 300
-  min = 10
-  max = 7200
-  step = 10
 
   [[desktop_widget.setting]]
   key = "color"

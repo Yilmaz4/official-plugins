@@ -25,6 +25,9 @@ end
 noctalia.state.set("timer.state", "IDLE") -- IDLE, NOTIFY, RUNNING, PAUSED
 noctalia.state.set("timer.remaining", 0)
 noctalia.state.set("timer.formattedTime", "0")
+-- The countdown total captured when the timer starts, so UI entries can render
+-- a progress bar (remaining / duration). Reset to 0 when the timer is cleared.
+noctalia.state.set("timer.duration", 0)
 
 noctalia.state.watch("timer.remaining", function (value)
   noctalia.state.set("timer.formattedTime", formatTime(value))
@@ -41,11 +44,17 @@ noctalia.state.watch("timer.cmd", function(cmd)
       local STATE = noctalia.state.get("timer.state")
 
       if (STATE == "IDLE" or STATE == "PAUSED") and remaining > 0 then
+        -- Capture the total on a fresh start so progress bars have a baseline;
+        -- leave it untouched when resuming from PAUSED.
+        if STATE == "IDLE" then
+          noctalia.state.set("timer.duration", remaining)
+        end
         noctalia.state.set("timer.state", "RUNNING")
       end
     end,
     RESET = function ()
       noctalia.state.set("timer.remaining", 0)
+      noctalia.state.set("timer.duration", 0)
       noctalia.state.set("timer.state", "IDLE")
     end
   }

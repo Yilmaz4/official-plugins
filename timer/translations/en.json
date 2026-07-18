@@ -8,21 +8,21 @@
       "description": "Countdown length in seconds.",
       "label": "Duration (seconds)"
     },
+    "show_idle": {
+      "description": "Show/hide the widget when timer stopped at zero.",
+      "label": "Show count when idle on horizontal bar"
+    },
     "show_progress": {
       "label": "Show progress bar"
-    },
-    "show_idle": {
-      "label": "Show count when idle on horizontal bar",
-      "description": "Show/hide the widget when timer stopped at zero."
     }
   },
   "ui": {
     "duration_label": "Timer duration",
     "duration_placeholder": "e.g. 400 → 4:00",
-    "reset": "Reset",
-    "start": "Start",
-    "pause": "Pause",
+    "notify_body": "Time is up!",
     "notify_title": "Timer",
-    "notify_body": "Time is up!"
+    "pause": "Pause",
+    "reset": "Reset",
+    "start": "Start"
   }
 }
