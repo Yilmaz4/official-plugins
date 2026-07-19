@@ -17,7 +17,9 @@ pause or resume it.
 
 Keyboard reactivity is disabled until `input_devices` is configured. Use stable
 paths from `/dev/input/by-id/` or `/dev/input/by-path/` when possible because
-`/dev/input/eventN` names can change after device or kernel updates.
+`/dev/input/eventN` names can change after device or kernel updates. Some
+devices, including Bluetooth keyboards, may not expose a stable path; using
+their `/dev/input/eventN` path is supported.
 
 Audio reactivity is controlled separately with `audio_spectrum`. When enabled,
 the widget can tap to the beat, flash rave colors on beat, and optionally ignore

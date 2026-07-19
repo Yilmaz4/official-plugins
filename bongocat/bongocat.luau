@@ -215,15 +215,10 @@ local function startInputReader()
 
   local patterns = {}
   local seen = {}
-  local warnedEventPath = false
   for _, pattern in ipairs(devices) do
     if not validateInputPattern(pattern) then
       noctalia.notifyError("Bongo Cat", `Invalid input_devices entry: {tostring(pattern)}`)
       return
-    end
-    if pattern:match("^/dev/input/event") ~= nil and not warnedEventPath then
-      warnedEventPath = true
-      noctalia.notify("Bongo Cat", "Prefer /dev/input/by-id or /dev/input/by-path; /dev/input/eventN can change.")
     end
     if seen[pattern] == nil then
       seen[pattern] = true
