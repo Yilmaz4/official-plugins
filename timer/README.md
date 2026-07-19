@@ -1,8 +1,9 @@
 # Timer
 
-Timer offers two independent timer experiences: a bar widget with panel for
-interactive countdown control, and a standalone desktop widget with its own
-built-in start, pause, reset, and progress display.
+Timer is a countdown timer with three UI surfaces — a bar widget, a panel, and
+a desktop widget — that are all thin clients of one headless service. They
+share a single countdown through Noctalia's plugin state, so starting, pausing,
+or resetting from any surface updates them all live.
 
 ## Plugin
 
@@ -11,7 +12,9 @@ built-in start, pause, reset, and progress display.
 | ID | `noctalia/timer` |
 | Entries | Service: `timer`; bar widget: `bar`; panel: `panel`; desktop widget: `desktop` |
 
-## Bar Widget and Panel
+## Usage
+
+### Bar Widget and Panel
 
 The headless `timer` service owns countdown logic and state. The `bar` widget
 and `panel` communicate with the service through shared plugin state.
@@ -25,14 +28,22 @@ On vertical bars, the widget shows an hourglass with the time as a tooltip.
 On horizontal bars, the widget shows the hourglass and countdown side by side,
 with an option to hide the countdown when idle.
 
-## Desktop Widget
+You can also open the timer panel over IPC:
 
-Add the `desktop` desktop widget from Noctalia's desktop-widget editor. The
-widget counts down from the configured duration, can be paused and reset, and
-sends a notification when the countdown reaches zero.
+```sh
+noctalia msg panel-toggle noctalia/timer:panel
+```
 
-The desktop widget manages its own state independently and does not interact
-with the bar widget or service.
+### Desktop Widget
+
+Add the `desktop` desktop widget from Noctalia's desktop-widget editor. Because
+desktop widgets cannot take keyboard focus, it sets the duration with
+keyboard-free `-1m`/`+1m`/`+5m` buttons instead of typed input, then starts,
+pauses, and resets the countdown.
+
+The desktop widget owns no timer logic: it drives the same shared countdown as
+the bar widget and panel through the `timer` service, so all three stay in sync,
+and the service sends a notification when the countdown reaches zero.
 
 ## Settings
 
@@ -46,7 +57,6 @@ with the bar widget or service.
 
 | Setting | Type | Default | Description |
 | --- | --- | --- | --- |
-| `duration` | `int` | `300` | Countdown duration in seconds, from 10 to 7200. |
 | `color` | `color` | `primary` | Accent color for the time and progress bar. |
 | `show_progress` | `bool` | `true` | Shows or hides the progress bar. |
 

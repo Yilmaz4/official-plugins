@@ -19,7 +19,7 @@ Open the launcher and type `/kao`:
   Love, Cat, Sleepy, …) to narrow them by category.
 - Type any word(s) after `/kao` to **search** by tag, e.g. `/kao shrug`,
   `/kao cat happy`. The category bar still filters the search results.
-- Press <kbd>Enter</kbd> on a kaomoji to copy it to the clipboard.
+- Press `Enter` on a kaomoji to copy it to the clipboard.
 
 The category bar follows the launcher's global *Show categories* setting.
 

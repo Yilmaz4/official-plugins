@@ -10,6 +10,7 @@ shortcut.
 | --- | --- |
 | ID | `noctalia/example` |
 | Entries | Bar widgets: `hello`, `declarative`; service: `ticker`; shortcut: `toggle`; launcher: `finder`; panel: `panel` |
+| Launcher Prefix | `/ex` |
 
 ## Usage
 
