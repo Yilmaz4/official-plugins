@@ -256,6 +256,13 @@ declare ui: {
   slider: UiCtor,
   toggle: UiCtor,
   scroll: UiCtor,
+  -- Drag and drop (plugin panels only, plugin_api >= 5). dragSource props:
+  -- dragType/payload (required strings), enabled, tooltip, previewAncestor
+  -- (0-8), liftFromLayout. dropZone props: accepts (string array), value,
+  -- onDrop (required), direction, enabled, expandOnDrag, hitSlop. The onDrop
+  -- global receives (payload, value) after a completed drop.
+  dragSource: UiCtor,
+  dropZone: UiCtor,
 }
 
 -- ── launcher.* — [[launcher_provider]] results ───────────────────────────────
