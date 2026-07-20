@@ -6,8 +6,8 @@
 
 id = "noctalia/example"
 name = "Example"
-version = "1.2.2"
-plugin_api = 3
+version = "1.3.0"
+plugin_api = 5
 author = "noctalia"
 license = "MIT"
 dependencies = []
@@ -79,5 +79,16 @@ id = "panel"
 entry = "panel.luau"
 width = 420
 height = 410
+placement = "floating"
+position = "center"
+
+# Second panel: the drag-and-drop reference (plugin_api 5) - sortable rows with
+# insertion zones, cross-column moves, a catch-all zone per column, and a
+# rejected-type target. Open it with: noctalia msg panel-toggle noctalia/example:dnd
+[[panel]]
+id = "dnd"
+entry = "dnd.luau"
+width = 560
+height = 460
 placement = "floating"
 position = "center"
