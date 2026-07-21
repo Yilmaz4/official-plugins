@@ -186,7 +186,8 @@ export type Noctalia = {
 
   fuzzyScore: (pattern: string, text: string) -> number?, -- nil if no match
 
-  getConfig: (key: string) -> any, -- string | number | boolean | {string} | nil
+  -- String maps ({[string]: string}) require plugin_api >= 6.
+  getConfig: (key: string) -> any, -- string | number | boolean | {string} | {[string]: string} | nil
 
   state: NoctaliaState,
   json: NoctaliaJson,
