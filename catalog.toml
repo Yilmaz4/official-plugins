@@ -103,3 +103,14 @@ icon = "notes"
 description = "Quick text notes in a full-height side panel."
 plugin_api = 3
 tags = ["productivity"]
+
+[[plugin]]
+id = "noctalia/bitwarden"
+name = "Bitwarden"
+version = "1.0.0"
+author = "noctalia"
+license = "MIT"
+icon = "lock"
+description = "Search your Bitwarden vault from the launcher and copy passwords via the local bw serve API."
+plugin_api = 8
+tags = ["launcher", "privacy", "productivity", "utility"]
