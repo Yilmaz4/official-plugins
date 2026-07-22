@@ -132,7 +132,8 @@ ROOT_FIELDS = set(ROOT_STRING_FIELDS) | set(ROOT_ARRAY_FIELDS) | set(ENTRY_TYPES
 BASE_ENTRY_FIELDS = {"id", "entry"}
 ENTRY_FIELDS = {
     "widget": BASE_ENTRY_FIELDS | {"setting"},
-    "panel": BASE_ENTRY_FIELDS | {"setting", "width", "height", "placement", "position", "open_near_click"},
+    "panel": BASE_ENTRY_FIELDS
+    | {"setting", "width", "height", "placement", "position", "open_near_click", "dismiss_on_outside_click"},
     "desktop_widget": BASE_ENTRY_FIELDS | {"setting"},
     "service": BASE_ENTRY_FIELDS,
     "shortcut": BASE_ENTRY_FIELDS,
@@ -686,7 +687,13 @@ class Validator:
             if not is_non_empty_string(category.get("glyph")):
                 self.add_context_error(manifest_path, category_context, "glyph must be a non-empty string")
 
-    def validate_panel_fields(self, manifest_path: Path, context: str, entry: dict[str, Any]) -> None:
+    def validate_panel_fields(
+        self,
+        manifest_path: Path,
+        context: str,
+        entry: dict[str, Any],
+        plugin_api: Any,
+    ) -> None:
         # Mirrors the shell parser: a positive number (logical px) or the
         # literal string "fill" (span the output's available extent; requires
         # floating placement).
@@ -725,6 +732,16 @@ class Validator:
 
         if "open_near_click" in entry and not isinstance(entry["open_near_click"], bool):
             self.add_context_error(manifest_path, context, "open_near_click must be a bool")
+
+        if "dismiss_on_outside_click" in entry:
+            if not is_int(plugin_api) or plugin_api < 8:
+                self.add_context_error(
+                    manifest_path,
+                    context,
+                    "dismiss_on_outside_click requires plugin_api >= 8",
+                )
+            elif not isinstance(entry["dismiss_on_outside_click"], bool):
+                self.add_context_error(manifest_path, context, "dismiss_on_outside_click must be a bool")
 
     def validate_entries(
         self,
@@ -771,7 +788,7 @@ class Validator:
                     self.validate_launcher_fields(manifest_path, context, entry)
 
                 if entry_type == "panel":
-                    self.validate_panel_fields(manifest_path, context, entry)
+                    self.validate_panel_fields(manifest_path, context, entry, manifest.get("plugin_api"))
 
                 if entry_type in SETTING_OWNER_TYPES and "setting" in entry:
                     self.validate_settings(
