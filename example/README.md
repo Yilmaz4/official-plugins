@@ -9,7 +9,7 @@ shortcut.
 | Field | Value |
 | --- | --- |
 | ID | `noctalia/example` |
-| Entries | Bar widgets: `hello`, `declarative`; service: `ticker`; shortcut: `toggle`; launcher: `finder`; panel: `panel` |
+| Entries | Bar widgets: `hello`, `declarative`; service: `ticker`; shortcut: `toggle`; launcher: `finder`; panels: `panel`, `dnd` |
 | Launcher Prefix | `/ex` |
 
 ## Usage
@@ -52,9 +52,13 @@ You can open the example panel with the following IPC call:
 
 ```sh
 noctalia msg panel-toggle noctalia/example:panel
+noctalia msg panel-toggle noctalia/example:dnd
 ```
 
 The panel includes a **Color picker** section. Click **Choose color** to open
 Noctalia's native dialog; applying a color updates the swatch and displays the
 hex value returned to the plugin callback, while cancelling displays the
 cancellation result.
+
+The `dnd` panel is the drag-and-drop reference (sortable rows, cross-column
+moves, and rejected-type targets).
