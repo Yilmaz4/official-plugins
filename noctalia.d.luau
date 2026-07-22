@@ -29,6 +29,9 @@ export type HttpRequest = {
   basic_username: string?,
   basic_password: string?,
   follow_redirects: boolean?,
+  -- Disables origin certificate and hostname verification. Defaults to false.
+  -- Use only for explicitly trusted endpoints. Requires plugin_api >= 7.
+  allow_insecure_tls: boolean?,
 }
 
 export type HttpResponse = {
