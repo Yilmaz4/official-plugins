@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 import tomllib
-import subprocess
 from pathlib import Path
 
 
@@ -48,14 +48,14 @@ def load_plugin_manifest(path: Path) -> dict:
                 raise ValueError(f"{path.relative_to(ROOT_DIR)} has invalid {field}; expected bool")
             out[field] = manifest[field]
 
-    out["last_modified"] = int(subprocess.run(
+    out["updated_at"] = int(subprocess.run(
         ["git", "log", "-1", "--format=%ct", "--", path],
         capture_output=True,
         text=True,
-        check=True
+        check=True,
       ).stdout.strip())
 
-    out["date_added"] = int(subprocess.run(
+    out["added_at"] = int(subprocess.run(
         ["git", "log", "-1", "--diff-filter=A", "--format=%ct", "--", path],
         capture_output=True,
         text=True,
@@ -102,7 +102,7 @@ def render_catalog(plugins: list[dict]) -> str:
         "# This file is auto-generated. Do not edit manually.",
         "# Do not include it in your commit.",
         "# Official Noctalia plugins catalog.",
-        "# Index of every plugin this source ships \u2014 the minimum needed to render, search,",
+        "# Index of every plugin this source ships: the minimum needed to render, search,",
         "# and compat-check the list. The per-plugin plugin.toml stays authoritative; the",
         "# host re-reads it on enable. Keep one [[plugin]] row per plugin subdirectory.",
         "",
@@ -118,8 +118,8 @@ def render_catalog(plugins: list[dict]) -> str:
                 f"id = {toml_string(plugin['id'])}",
                 f"name = {toml_string(plugin['name'])}",
                 f"version = {toml_string(plugin['version'])}",
-                f"last_modified = {str(plugin['last_modified'])}",
-                f"date_added = {str(plugin['date_added'])}",
+                f"updated_at = {plugin['updated_at']}",
+                f"added_at = {plugin['added_at']}",
                 f"author = {toml_string(plugin['author'])}",
             ]
         )
